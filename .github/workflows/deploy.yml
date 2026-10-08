@@ -1,0 +1,87 @@
+name: CI/CD Pipeline - Deploy DB Security Sentinel to Vercel
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  workflow_dispatch:
+
+env:
+  VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+  VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
+jobs:
+  security-audit-and-tests:
+    name: 🛡️ Cryptographic & AI Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Codebase
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js Environment
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm ci || npm install
+
+      - name: Execute HMAC-SHA256 & NVIDIA NIM Unit Tests
+        env:
+          WEBHOOK_SECRET: ${{ secrets.WEBHOOK_SECRET || 'sec_ci_test_hmac_secret_key' }}
+          NVIDIA_NIM_API_KEY: ${{ secrets.NVIDIA_NIM_API_KEY || 'nvapi-mock-key' }}
+        run: |
+          echo "Running Cryptographic and Dual-Model Threat Engine Verification..."
+          node tests/test_hmac_webhook.js
+          node tests/test_nim_analysis.js
+
+  deploy-to-vercel:
+    name: 🚀 Deploy to Vercel Production
+    needs: security-audit-and-tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Codebase
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js Runtime
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install Vercel CLI Globally
+        run: npm install -g vercel@latest
+
+      - name: Deploy to Vercel Production with Secrets Injection
+        id: vercel_deploy
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        run: |
+          echo "==> Deploying Database Security Monitor to Vercel Production..."
+          
+          # Deploy with automatic production flag, tokens, and injected runtime environment variables
+          DEPLOY_OUTPUT=$(vercel deploy --prod --yes \
+            --token="${{ secrets.VERCEL_TOKEN }}" \
+            --env SUPABASE_URL="${{ secrets.SUPABASE_URL }}" \
+            --env SUPABASE_ANON_KEY="${{ secrets.SUPABASE_ANON_KEY }}" \
+            --env WEBHOOK_SECRET="${{ secrets.WEBHOOK_SECRET }}" \
+            --env NVIDIA_NIM_API_KEY="${{ secrets.NVIDIA_NIM_API_KEY }}" \
+            --env NIM_MODEL_1="meta/llama-3.1-70b-instruct" \
+            --env NIM_MODEL_2="meta/llama-3.1-8b-instruct")
+
+          echo "Deployment Result:"
+          echo "$DEPLOY_OUTPUT"
+          
+          # Extract deployment URL
+          LIVE_URL=$(echo "$DEPLOY_OUTPUT" | grep -Eo 'https://[^ >]+' | head -n 1)
+          echo "LIVE_URL=$LIVE_URL" >> $GITHUB_ENV
+          echo "LIVE_URL=$LIVE_URL" >> $GITHUB_OUTPUT
+
+      - name: Post Deployment Audit & Verification Notice
+        run: |
+          echo "=========================================================="
+          echo "✅ DEPLOYMENT SUCCESSFUL!"
+          echo "🌐 Live Sentinel SOC URL: ${{ env.LIVE_URL }}"
+          echo "🔒 Webhook Receiver: ${{ env.LIVE_URL }}/api/webhook"
+          echo "=========================================================="

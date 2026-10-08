@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Supabase Sentinel | Real-Time DB Security Monitor & Dual NVIDIA NIM AI</title>
+  <meta name="description" content="Enterprise Database Threat Monitoring with HMAC-SHA256 Webhook Authentication, Dual NVIDIA NIM AI Threat Intelligence, and Automated Defense">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Ambient background glow effects -->
+  <div class="ambient-glow glow-1"></div>
+  <div class="ambient-glow glow-2"></div>
+  <div class="cyber-grid"></div>
+
+  <div class="soc-container">
+    <!-- Top Bar Navigation & Status -->
+    <header class="soc-header" id="soc-header">
+      <div class="brand-group">
+        <div class="shield-logo">
+          <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" fill="rgba(0, 242, 254, 0.15)"/>
+            <path d="M9 12l2 2 4-4" stroke="#00f2fe" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div>
+          <div class="brand-title">SUPABASE SENTINEL <span class="badge-v1">SOC v2.4</span></div>
+          <div class="brand-subtitle">Real-Time Database Perimeter Defense & Dual NVIDIA NIM AI</div>
+        </div>
+      </div>
+
+      <div class="header-status-group">
+        <div class="status-chip" id="chip-supabase">
+          <span class="pulse-indicator green"></span>
+          <span class="chip-label">SUPABASE CDC: <strong id="supabase-status-text">CONNECTED</strong></span>
+        </div>
+        <div class="status-chip" id="chip-hmac">
+          <span class="icon-lock">🔒</span>
+          <span class="chip-label">HMAC-SHA256: <strong>ACTIVE</strong></span>
+        </div>
+        <div class="status-chip" id="chip-defcon">
+          <span class="defcon-badge" id="defcon-level">DEFCON 4 • ELEVATED</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Metrics Cards Row -->
+    <section class="kpi-grid" id="kpi-section">
+      <div class="kpi-card glass-panel" id="card-total-events">
+        <div class="kpi-meta">
+          <span class="kpi-title">TOTAL AUDITED QUERIES</span>
+          <span class="kpi-badge">Supabase Webhook</span>
+        </div>
+        <div class="kpi-value" id="kpi-total-val">1,482</div>
+        <div class="kpi-footer text-cyan">
+          <span>↑ 100% Ingestion Rate</span>
+          <span class="mono-tag">CDC Realtime</span>
+        </div>
+      </div>
+
+      <div class="kpi-card glass-panel" id="card-threats-blocked">
+        <div class="kpi-meta">
+          <span class="kpi-title">THREATS INTERCEPTED</span>
+          <span class="kpi-badge badge-danger">Active Drop</span>
+        </div>
+        <div class="kpi-value text-red" id="kpi-threats-val">47</div>
+        <div class="kpi-footer text-red">
+          <span>SQLi & Privilege Escalations</span>
+          <span class="mono-tag tag-red">Auto-Quarantine</span>
+        </div>
+      </div>
+
+      <div class="kpi-card glass-panel" id="card-hmac-integrity">
+        <div class="kpi-meta">
+          <span class="kpi-title">HMAC CRYPTO INTEGRITY</span>
+          <span class="kpi-badge badge-success">SHA-256</span>
+        </div>
+        <div class="kpi-value text-emerald" id="kpi-hmac-val">99.8%</div>
+        <div class="kpi-footer text-emerald">
+          <span id="kpi-hmac-counts">1,480 Valid / 2 Tampered</span>
+          <span class="mono-tag tag-green">Timing-Safe</span>
+        </div>
+      </div>
+
+      <div class="kpi-card glass-panel" id="card-nim-consensus">
+        <div class="kpi-meta">
+          <span class="kpi-title">NVIDIA NIM CONSENSUS</span>
+          <span class="kpi-badge badge-nvidia">Dual AI Ensemble</span>
+        </div>
+        <div class="kpi-value text-nvidia" id="kpi-consensus-val">98.4%</div>
+        <div class="kpi-footer text-nvidia">
+          <span>LLaMA-3.1 70B & 8B Agreement</span>
+          <span class="mono-tag tag-nvidia">NIM Microservice</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Main Grid: Threat Stream & Dual AI Inspector -->
+    <div class="main-soc-grid">
+      <!-- Left Column: Dual AI Brain Matrix & Simulator -->
+      <section class="left-soc-column">
+        <!-- Dual NVIDIA NIM Intelligence Hub -->
+        <div class="glass-panel intelligence-hub" id="nim-intelligence-panel">
+          <div class="panel-header">
+            <div class="panel-title-group">
+              <span class="icon-chip">⚡</span>
+              <h3>Dual NVIDIA NIM AI Intelligence Engines</h3>
+            </div>
+            <span class="live-tag"><span class="pulse-indicator green"></span> INFERENCE READY</span>
+          </div>
+
+          <div class="dual-model-grid">
+            <!-- Model 1 -->
+            <div class="model-box model-primary">
+              <div class="model-header">
+                <div>
+                  <span class="model-role">ENGINE 1 • INTRUSION CLASSIFIER</span>
+                  <div class="model-name">meta/llama-3.1-70b-instruct</div>
+                </div>
+                <span class="model-badge">70B Parameters</span>
+              </div>
+              <div class="model-body">
+                <div class="metric-row">
+                  <span>Specialization:</span>
+                  <strong class="text-cyan">Zero-day SQLi & AST Syntax Triage</strong>
+                </div>
+                <div class="metric-row">
+                  <span>Latency:</span>
+                  <strong class="mono">142ms (NVIDIA TensorRT)</strong>
+                </div>
+                <div class="metric-row">
+                  <span>Last Verdict:</span>
+                  <span class="status-pill pill-danger" id="model1-last-verdict">SQL_INJECTION_DETECTED</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Model 2 -->
+            <div class="model-box model-secondary">
+              <div class="model-header">
+                <div>
+                  <span class="model-role">ENGINE 2 • DEFENSE STRATEGIST</span>
+                  <div class="model-name">meta/llama-3.1-8b-instruct</div>
+                </div>
+                <span class="model-badge badge-alt">8B Ultra-Fast</span>
+              </div>
+              <div class="model-body">
+                <div class="metric-row">
+                  <span>Specialization:</span>
+                  <strong class="text-emerald">Risk Scoring (CVSS) & RLS Containment</strong>
+                </div>
+                <div class="metric-row">
+                  <span>Latency:</span>
+                  <strong class="mono">38ms (NVIDIA TensorRT)</strong>
+                </div>
+                <div class="metric-row">
+                  <span>Mitigation Rule:</span>
+                  <span class="status-pill pill-warning" id="model2-last-mitigation">QUARANTINE_IP_AND_REVOKE</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Consensus Meter -->
+          <div class="consensus-container">
+            <div class="consensus-header">
+              <span>Dual-Model Agreement Index</span>
+              <strong id="consensus-percentage">98.4% Confidence Consensus</strong>
+            </div>
+            <div class="consensus-track">
+              <div class="consensus-fill" id="consensus-bar" style="width: 98.4%"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Interactive Webhook Threat Simulator -->
+        <div class="glass-panel simulator-panel" id="simulator-panel">
+          <div class="panel-header">
+            <div class="panel-title-group">
+              <span class="icon-chip">🧪</span>
+              <h3>Supabase Webhook & HMAC Security Testing Console</h3>
+            </div>
+            <span class="badge-subtle">Audit & Penetration Sandbox</span>
+          </div>
+
+          <div class="simulator-body">
+            <div class="form-row">
+              <label for="attack-preset">Select Attack Scenario / Vector:</label>
+              <select id="attack-preset" class="soc-select">
+                <option value="sqli">1. SQL Injection: Tautology Auth Bypass (OR 1=1)</option>
+                <option value="privesc">2. Privilege Escalation: GRANT SUPERUSER to Anon</option>
+                <option value="exfil">3. Data Dump: Exfiltrate 50,000 Payment Tokens</option>
+                <option value="benign">4. Benign Query: User Profile Timestamp Update</option>
+              </select>
+            </div>
+
+            <div class="form-row">
+              <label>HMAC-SHA256 Cryptographic Signature Header:</label>
+              <div class="radio-toggle-group">
+                <label class="radio-chip">
+                  <input type="radio" name="hmac-integrity" value="valid" checked>
+                  <span class="radio-label green-glow">✓ Valid HMAC-SHA256 Header</span>
+                </label>
+                <label class="radio-chip">
+                  <input type="radio" name="hmac-integrity" value="tampered">
+                  <span class="radio-label red-glow">✗ Tampered / Forged Signature (Simulate Attack)</span>
+                </label>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <label>Simulated Supabase Webhook Payload (JSON):</label>
+              <textarea id="webhook-payload-editor" class="soc-textarea" rows="4"></textarea>
+            </div>
+
+            <div class="action-btn-row">
+              <button id="btn-fire-webhook" class="btn btn-primary">
+                <span class="icon-bolt">⚡</span>
+                Send to /api/webhook (Verify HMAC & Analyze via NIM)
+              </button>
+              <button id="btn-recompute-hmac" class="btn btn-secondary">
+                <span class="icon-lock">🔐</span>
+                Inspect HMAC Key Math
+              </button>
+            </div>
+
+            <!-- Dynamic Execution Output Console -->
+            <div class="console-box" id="simulator-output-box">
+              <div class="console-top">
+                <span class="console-title">INSPECTION TELEMETRY OUTPUT</span>
+                <span class="console-status" id="console-http-status">STATUS: STANDBY</span>
+              </div>
+              <pre class="console-code" id="console-code-block">// Select a vector above and click "Send to /api/webhook"
+// Serverless function will perform timing-safe HMAC-SHA256 verification
+// and stream through Dual NVIDIA NIM microservices.</pre>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Right Column: Real-Time Incident Stream & Telemetry -->
+      <section class="right-soc-column">
+        <div class="glass-panel incident-feed-panel">
+          <div class="panel-header">
+            <div class="panel-title-group">
+              <span class="icon-radar">📡</span>
+              <h3>Live Supabase Threat & CDC Incident Stream</h3>
+            </div>
+            <button id="btn-refresh-feed" class="btn-icon" title="Refresh Live Stream">↻</button>
+          </div>
+
+          <!-- Radar Visualizer Banner -->
+          <div class="radar-strip">
+            <div class="radar-sweep"></div>
+            <div class="radar-legend">
+              <span>● Realtime Ingestion Socket: <strong>/api/events</strong></span>
+              <span>● Defense Mode: <strong>Active Auto-Quarantine</strong></span>
+            </div>
+          </div>
+
+          <!-- Events Feed List -->
+          <div class="incident-scroll" id="incident-feed-container">
+            <!-- Dynamic incident items injected by app.js -->
+            <div class="incident-empty-state">Loading threat feed...</div>
+          </div>
+        </div>
+
+        <!-- CI/CD & Cloud Infrastructure Status -->
+        <div class="glass-panel infra-panel">
+          <div class="panel-header">
+            <div class="panel-title-group">
+              <span class="icon-cloud">☁️</span>
+              <h3>Automated CI/CD & Cloud Pipeline</h3>
+            </div>
+            <span class="badge-success">Vercel • GitHub Actions</span>
+          </div>
+
+          <div class="pipeline-grid">
+            <div class="pipe-step">
+              <div class="pipe-icon">🐙</div>
+              <div class="pipe-info">
+                <strong>GitHub Actions</strong>
+                <span>Workflow: <code>.github/workflows/deploy.yml</code></span>
+              </div>
+              <span class="pipe-status status-ok">ON PUSH</span>
+            </div>
+
+            <div class="pipe-step">
+              <div class="pipe-icon">▲</div>
+              <div class="pipe-info">
+                <strong>Vercel Edge</strong>
+                <span>Serverless Functions & Instant CDN</span>
+              </div>
+              <span class="pipe-status status-ok">LIVE PROD</span>
+            </div>
+
+            <div class="pipe-step">
+              <div class="pipe-icon">🛡️</div>
+              <div class="pipe-info">
+                <strong>Secrets Vault</strong>
+                <span><code>VERCEL_TOKEN</code>, <code>WEBHOOK_SECRET</code>, <code>NIM_KEY</code></span>
+              </div>
+              <span class="pipe-status status-ok">ENCRYPTED</span>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Incident Detail Modal (Floating Drawer) -->
+    <div class="modal-backdrop" id="incident-modal" style="display: none;">
+      <div class="modal-card glass-panel">
+        <div class="modal-header">
+          <h3 id="modal-incident-title">Incident Deep-Dive Assessment</h3>
+          <button class="modal-close-btn" id="modal-close-btn">&times;</button>
+        </div>
+        <div class="modal-body" id="modal-incident-content">
+          <!-- Content injected dynamically -->
+        </div>
+      </div>
+    </div>
+
+    <!-- SOC Footer -->
+    <footer class="soc-footer">
+      <div>
+        Supabase Sentinel Security Suite • Built for Mission-Critical Database Protection
+      </div>
+      <div class="footer-links">
+        <span>HMAC-SHA256 Timing-Safe</span>
+        <span>•</span>
+        <span>NVIDIA NIM Microservices</span>
+        <span>•</span>
+        <span>Vercel Automated CI/CD</span>
+      </div>
+    </footer>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
