@@ -7,9 +7,6 @@ on:
       - master
   workflow_dispatch:
 
-env:
-  VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-  VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
 
 jobs:
   security-audit-and-tests:
@@ -60,6 +57,14 @@ jobs:
         run: |
           echo "==> Deploying Database Security Monitor to Vercel Production..."
           
+          # Conditionally set VERCEL_ORG_ID and VERCEL_PROJECT_ID if present in secrets
+          if [ -n "${{ secrets.VERCEL_ORG_ID }}" ]; then
+            export VERCEL_ORG_ID="${{ secrets.VERCEL_ORG_ID }}"
+          fi
+          if [ -n "${{ secrets.VERCEL_PROJECT_ID }}" ]; then
+            export VERCEL_PROJECT_ID="${{ secrets.VERCEL_PROJECT_ID }}"
+          fi
+
           # Deploy with automatic production flag, tokens, and injected runtime environment variables
           DEPLOY_OUTPUT=$(vercel deploy --prod --yes \
             --token="${{ secrets.VERCEL_TOKEN }}" \
@@ -73,8 +78,11 @@ jobs:
           echo "Deployment Result:"
           echo "$DEPLOY_OUTPUT"
           
-          # Extract deployment URL
-          LIVE_URL=$(echo "$DEPLOY_OUTPUT" | grep -Eo 'https://[^ >]+' | head -n 1)
+          # Extract deployment URL (prefer the live .vercel.app domain over the vercel.com inspect link)
+          LIVE_URL=$(echo "$DEPLOY_OUTPUT" | grep -Eo 'https://[^ >]+' | grep -v 'vercel\.com' | tail -n 1)
+          if [ -z "$LIVE_URL" ]; then
+            LIVE_URL=$(echo "$DEPLOY_OUTPUT" | grep -Eo 'https://[^ >]+' | tail -n 1)
+          fi
           echo "LIVE_URL=$LIVE_URL" >> $GITHUB_ENV
           echo "LIVE_URL=$LIVE_URL" >> $GITHUB_OUTPUT
 
