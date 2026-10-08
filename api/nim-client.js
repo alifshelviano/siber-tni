@@ -5,7 +5,7 @@
  * - Model 2: meta/llama-3.1-8b-instruct (Risk Scoring & Automated Mitigation Defense)
  */
 
-const https = require('https');
+import https from 'https';
 
 const NIM_ENDPOINT = 'integrate.api.nvidia.com';
 const NIM_PATH = '/v1/chat/completions';
@@ -207,7 +207,12 @@ async function analyzeThreatWithDualNimModels(eventPayload) {
   };
 }
 
-module.exports = {
+export {
+  callNvidiaNimModel,
+  analyzeThreatWithDualNimModels
+};
+
+export default {
   callNvidiaNimModel,
   analyzeThreatWithDualNimModels
 };

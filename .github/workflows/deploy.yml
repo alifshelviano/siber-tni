@@ -33,6 +33,8 @@ jobs:
           echo "Running Cryptographic and Dual-Model Threat Engine Verification..."
           node tests/test_hmac_webhook.js
           node tests/test_nim_analysis.js
+          echo "Running Webhook Security & Telegram Flow Verification..."
+          node script/test_flows.js
           echo "Running Asynchronous Python AI Concurrency Verification (asyncio.gather)..."
           pip install -r requirements.txt
           python tests/test_async_ai.py
@@ -75,6 +77,8 @@ jobs:
             --env SUPABASE_ANON_KEY="${{ secrets.SUPABASE_ANON_KEY }}" \
             --env WEBHOOK_SECRET="${{ secrets.WEBHOOK_SECRET }}" \
             --env NVIDIA_NIM_API_KEY="${{ secrets.NVIDIA_NIM_API_KEY }}" \
+            --env TELEGRAM_BOT_TOKEN="${{ secrets.TELEGRAM_BOT_TOKEN }}" \
+            --env TELEGRAM_CHAT_ID="${{ secrets.TELEGRAM_CHAT_ID }}" \
             --env NIM_MODEL_1="meta/llama-3.1-70b-instruct" \
             --env NIM_MODEL_2="meta/llama-3.1-8b-instruct")
 

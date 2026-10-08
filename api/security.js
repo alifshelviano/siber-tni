@@ -4,7 +4,7 @@
  * and replay-attack defense for Supabase Database Webhooks.
  */
 
-const crypto = require('crypto');
+import crypto from 'crypto';
 
 /**
  * Generate HMAC-SHA256 signature for a payload string
@@ -67,7 +67,12 @@ function verifyHmacSha256(rawBody, providedSignature, secret) {
   }
 }
 
-module.exports = {
+export {
+  generateHmacSha256,
+  verifyHmacSha256
+};
+
+export default {
   generateHmacSha256,
   verifyHmacSha256
 };

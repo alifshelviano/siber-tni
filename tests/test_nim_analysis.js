@@ -3,8 +3,8 @@
  * Verifies multi-model orchestration, consensus rating, and mitigation playbook synthesis.
  */
 
-const assert = require('assert');
-const { analyzeThreatWithDualNimModels } = require('../api/nim-client');
+import assert from 'assert';
+import { analyzeThreatWithDualNimModels } from '../api/nim-client.js';
 
 console.log('================================================================');
 console.log('⚡ TEST SUITE 2: DUAL NVIDIA NIM AI THREAT INTELLIGENCE');

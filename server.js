@@ -10,7 +10,8 @@ const fs = require('fs');
 const path = require('path');
 const url = require('url');
 
-const webhookHandler = require('./api/webhook');
+const webhookModule = require('./api/webhook');
+const webhookHandler = webhookModule.default || webhookModule;
 const eventsHandler = require('./api/events');
 const analyzeHandler = require('./api/analyze');
 const testHmacHandler = require('./api/test-hmac');

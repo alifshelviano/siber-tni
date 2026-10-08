@@ -1,39 +1,16 @@
+import crypto from 'crypto';
+
 /**
  * Vercel Serverless Function: Supabase Database Webhook Receiver
- * - Cryptographically verifies Supabase HMAC-SHA256 signature
- * - Analyzes threats dynamically using two NVIDIA NIM AI models
- * - Updates real-time incident store
+ * - Format: ES Module (import / export default)
+ * - HMAC-SHA256 signature verification via 'x-signature' header
+ * - Telegram Bot Alert Integration
  */
-
-const { verifyHmacSha256 } = require('./security');
-const { analyzeThreatWithDualNimModels } = require('./nim-client');
-const store = require('./store');
-
-// Helper to read raw body in Vercel / Node serverless environments
-function getRawBody(req) {
-  return new Promise((resolve, reject) => {
-    if (typeof req.body === 'string') {
-      return resolve(req.body);
-    }
-    if (req.rawBody) {
-      return resolve(typeof req.rawBody === 'string' ? req.rawBody : req.rawBody.toString('utf-8'));
-    }
-
-    let chunks = [];
-    req.on('data', chunk => chunks.push(chunk));
-    req.on('end', () => {
-      const buffer = Buffer.concat(chunks);
-      resolve(buffer.toString('utf-8'));
-    });
-    req.on('error', reject);
-  });
-}
-
-module.exports = async function handler(req, res) {
+export default async function handler(req, res) {
   // CORS Preflight
   if (req.method === 'OPTIONS') {
     res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, x-supabase-signature, x-hub-signature-256, x-signature-timestamp');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, x-signature, x-supabase-signature');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
     return res.status(200).end();
   }
@@ -41,113 +18,132 @@ module.exports = async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({
       error: 'Method Not Allowed',
-      message: 'Supabase webhook requires POST with HMAC-SHA256 signature'
+      message: 'Supabase webhook requires POST method'
     });
   }
 
   try {
-    const rawBody = await getRawBody(req);
-    const signature = req.headers['x-supabase-signature'] 
-      || req.headers['x-hub-signature-256'] 
-      || req.headers['x-signature']
-      || '';
-
-    const secret = process.env.WEBHOOK_SECRET || 'sec_super_secret_hmac_key_9f82a17cb420';
-
-    // 1. Verify Cryptographic HMAC-SHA256 Signature
-    const authResult = verifyHmacSha256(rawBody, signature, secret);
-
-    let parsedPayload;
-    try {
-      parsedPayload = JSON.parse(rawBody);
-    } catch (e) {
-      parsedPayload = { raw_content: rawBody };
-    }
-
-    if (!authResult.valid) {
-      // Log tampered or unauthorized attempt
-      const rejectedIncident = {
-        id: `tamper-${Date.now()}`,
-        source: 'Unknown / Untrusted Webhook Caller',
-        table: parsedPayload.table || 'unverified',
-        type: 'HMAC_AUTHENTICATION_FAILURE',
-        timestamp: new Date().toISOString(),
-        rawPayload: parsedPayload,
-        hmacValid: false,
-        signatureProvided: signature,
-        error: authResult.error,
-        aiAnalysis: {
-          overall_threat_level: 'CRITICAL',
-          consensus_score: 100,
-          consensus_status: 'SECURITY_INTEGRITY_VIOLATION',
-          model_1_triage: {
-            model: 'meta/llama-3.1-70b-instruct',
-            threat_type: 'UNAUTHORIZED_FORGED_PAYLOAD',
-            severity: 'CRITICAL',
-            confidence_score: 1.0,
-            classification_rationale: 'HMAC-SHA256 signature verification failed. Possible payload forgery or man-in-the-middle tampering attempt.'
-          },
-          model_2_defense: {
-            model: 'meta/llama-3.1-8b-instruct',
-            cvss_score: '9.9',
-            risk_score_100: 99,
-            suggested_mitigation: 'DROP_PACKET_AND_FLAG_ORIGIN_IP',
-            containment_protocol: 'Cryptographic perimeter breach detected. Refused unauthenticated webhook ingestion.'
-          }
-        }
-      };
-
-      store.addEvent(rejectedIncident);
-
-      return res.status(401).json({
-        success: false,
-        status: 401,
-        code: 'HMAC_VERIFICATION_FAILED',
-        error: authResult.error,
-        hint: 'Ensure your Supabase Webhook secret matches WEBHOOK_SECRET and payload is signed with HMAC-SHA256.'
+    // 1. Periksa apakah header x-signature ada, jika tidak ada tolak dengan 400 Bad Request
+    const signature = req.headers['x-signature'] || req.headers['x-supabase-signature'];
+    if (!signature) {
+      return res.status(400).json({
+        error: 'Bad Request',
+        message: 'Missing x-signature header'
       });
     }
 
-    // 2. Signature Valid -> Run Dual NVIDIA NIM AI Model Threat Analysis
-    const aiAnalysis = await analyzeThreatWithDualNimModels(parsedPayload);
+    // 2. Ambil isi body request sebagai string (JSON.stringify jika perlu),
+    // buat HMAC-SHA256 menggunakan crypto.createHmac("sha256", hmac_secret).update(body).digest("hex")
+    let bodyString = '';
+    let payload = req.body;
 
-    // 3. Persist Event & Update Real-time SOC Metrics
-    const verifiedEvent = {
-      id: `evt-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
-      source: 'Supabase Database Webhook (Verified)',
-      table: parsedPayload.table || parsedPayload.schema_table || 'public.database_events',
-      type: parsedPayload.type || 'DB_TRANSACTION_EVENT',
-      timestamp: new Date().toISOString(),
-      rawPayload: parsedPayload,
-      hmacValid: true,
-      signature: authResult.computedSignature,
-      aiAnalysis
-    };
+    if (typeof req.body === 'string') {
+      bodyString = req.body;
+      try {
+        payload = JSON.parse(bodyString);
+      } catch (e) {
+        payload = { raw: bodyString };
+      }
+    } else if (req.body && typeof req.body === 'object') {
+      bodyString = JSON.stringify(req.body);
+    } else {
+      // Buffer stream dari raw request (untuk custom server / local runner)
+      bodyString = await new Promise((resolve, reject) => {
+        let data = '';
+        req.on('data', chunk => data += chunk);
+        req.on('end', () => resolve(data));
+        req.on('error', reject);
+      });
+      try {
+        payload = JSON.parse(bodyString || '{}');
+      } catch (e) {
+        payload = { raw: bodyString };
+      }
+    }
 
-    store.addEvent(verifiedEvent);
+    const hmacSecret = process.env.HMAC_SECRET || process.env.WEBHOOK_SECRET || 'secret_key';
+    const computedHmac = crypto
+      .createHmac('sha256', hmacSecret)
+      .update(bodyString)
+      .digest('hex');
+
+    // 3. Bandingkan HMAC yang dibuat dengan nilai di header x-signature menggunakan perbandingan string biasa
+    const cleanHeaderSignature = signature.replace(/^sha256=/, '').trim();
+
+    if (computedHmac !== cleanHeaderSignature) {
+      // Jika tidak cocok tolak dengan 401 Unauthorized
+      return res.status(401).json({
+        error: 'Unauthorized',
+        message: 'Invalid HMAC signature'
+      });
+    }
+
+    // 4. Jika cocok lanjut ke pengiriman Telegram
+    // 5. Integrasi Telegram Bot Alert: URL https://api.telegram.org/bot{TOKEN}/sendMessage
+    // 6. Pesan mencantumkan status kejadian (AMAN/BAHAYA), level ancaman, dan detail dari payload Supabase
+    // 7. Gunakan environment variables telegram_bot_token dan telgram_chat_id (jangan hard code)
+    const botToken = process.env.TELEGRAM_BOT_TOKEN || process.env.telegram_bot_token;
+    const chatId = process.env.TELEGRAM_CHAT_ID || process.env.telgram_chat_id || process.env.telegram_chat_id;
+
+    // Evaluasi status kejadian (AMAN / BAHAYA) dan level ancaman dari payload Supabase
+    const payloadStr = JSON.stringify(payload).toLowerCase();
+    const isThreat = /union\s+select|or\s+1=1|drop\s+table|<script>|admin'|exec\s*\(|benchmark\(|sleep\(/i.test(payloadStr)
+      || payload.status === 'BAHAYA'
+      || payload.threat_level === 'CRITICAL'
+      || payload.threat_level === 'HIGH';
+
+    const statusKejadian = isThreat ? 'BAHAYA' : (payload.status || 'AMAN');
+    const levelAncaman = isThreat ? (payload.threat_level || 'CRITICAL') : (payload.threat_level || 'LOW');
+
+    const telegramMessage = `🚨 *SUPABASE SECURITY REPORT ALERT* 🚨\n\n`
+      + `📌 *Status Kejadian:* ${statusKejadian}\n`
+      + `⚠️ *Level Ancaman:* ${levelAncaman}\n`
+      + `🕒 *Waktu:* ${new Date().toISOString()}\n\n`
+      + `📋 *Detail Payload Supabase:*\n`
+      + `\`\`\`json\n${JSON.stringify(payload, null, 2)}\n\`\`\``;
+
+    let telegramSent = false;
+    let telegramResult = null;
+
+    if (botToken && chatId) {
+      try {
+        const tgRes = await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            chat_id: chatId,
+            text: telegramMessage,
+            parse_mode: 'Markdown'
+          })
+        });
+        telegramResult = await tgRes.json();
+        telegramSent = tgRes.ok;
+      } catch (tgErr) {
+        console.error('Telegram notification error:', tgErr.message);
+        telegramResult = { error: tgErr.message };
+      }
+    } else {
+      telegramResult = { note: 'Telegram credentials not provided in environment' };
+    }
 
     return res.status(200).json({
       success: true,
-      status: 200,
-      code: 'THREAT_EVALUATED_AND_LOGGED',
-      verified_by: 'HMAC-SHA256',
-      ai_ensemble: {
-        models_invoked: ['meta/llama-3.1-70b-instruct', 'meta/llama-3.1-8b-instruct'],
-        threat_level: aiAnalysis.overall_threat_level,
-        consensus: aiAnalysis.consensus_status,
-        consensus_score: aiAnalysis.consensus_score,
-        mitigation: aiAnalysis.recommended_action
+      status: 'success',
+      message: 'Valid signature - Supabase report accepted',
+      event_status: statusKejadian,
+      threat_level: levelAncaman,
+      telegram: {
+        sent: telegramSent,
+        response: telegramResult
       },
-      incident_id: verifiedEvent.id,
-      timestamp: verifiedEvent.timestamp
+      payload
     });
 
   } catch (error) {
-    console.error('[WEBHOOK ERROR]', error);
+    console.error('Webhook processing error:', error);
     return res.status(500).json({
-      success: false,
       error: 'Internal Server Error',
       message: error.message
     });
   }
-};
+}

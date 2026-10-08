@@ -1,12 +1,14 @@
 {
   "name": "supabase-db-security-monitor",
   "version": "1.0.0",
+  "type": "module",
   "description": "Real-time Database Security Monitoring with Supabase HMAC-SHA256 Webhook and Dual NVIDIA NIM Threat Analysis",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
     "dev": "node server.js",
-    "test": "node tests/test_hmac_webhook.js && node tests/test_nim_analysis.js"
+    "test": "node tests/test_hmac_webhook.js && node tests/test_nim_analysis.js",
+    "test:flows": "node script/test_flows.js"
   },
   "dependencies": {
     "dotenv": "^16.4.5"

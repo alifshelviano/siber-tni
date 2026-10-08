@@ -3,8 +3,8 @@
  * Verifies constant-time signature comparison, forgery rejection, and replay resilience.
  */
 
-const assert = require('assert');
-const { generateHmacSha256, verifyHmacSha256 } = require('../api/security');
+import assert from 'assert';
+import { generateHmacSha256, verifyHmacSha256 } from '../api/security.js';
 
 console.log('================================================================');
 console.log('🔒 TEST SUITE 1: HMAC-SHA256 CRYPTOGRAPHIC INTEGRITY');
