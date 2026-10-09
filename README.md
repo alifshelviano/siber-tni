@@ -106,6 +106,8 @@ Before pushing to GitHub, configure these repository secrets under **Settings > 
 | `SUPABASE_ANON_KEY` | Supabase Anonymous Client Key | `eyJhbGciOi...` |
 | `WEBHOOK_SECRET` | Secret key used to sign HMAC-SHA256 | `sec_super_secret_hmac_key_...` |
 | `NVIDIA_NIM_API_KEY` | NVIDIA NIM Microservices API Key | `nvapi-...` from [build.nvidia.com](https://build.nvidia.com) |
+| `TELEGRAM_BOT_TOKEN` | Telegram Bot API Token from @BotFather | `123456789:ABCdefGHIjklMNO...` |
+| `TELEGRAM_CHAT_ID` | Telegram User or Group Chat ID | `987654321` or `-100...` for group |
 
 ---
 

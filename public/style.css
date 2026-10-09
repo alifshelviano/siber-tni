@@ -889,3 +889,476 @@ body {
   display: flex;
   gap: 10px;
 }
+
+/* ==========================================================================
+   FLAGSHIP DYNAMIC MAIN SECURITY STATUS CARD
+   ========================================================================== */
+.main-status-section {
+  margin-bottom: 24px;
+}
+
+.main-status-card {
+  position: relative;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5);
+}
+
+.status-card-inner {
+  position: relative;
+  z-index: 2;
+  padding: 28px 32px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 32px;
+  flex-wrap: wrap;
+}
+
+.status-card-left {
+  flex: 1;
+  min-width: 320px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.status-badge-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.status-pill-badge {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  padding: 4px 14px;
+  border-radius: 20px;
+  text-transform: uppercase;
+  transition: all 0.4s ease;
+}
+
+.status-sub-badge {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  padding: 3px 10px;
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--text-muted);
+}
+
+.status-mode-tag {
+  font-size: 11px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.status-card-title {
+  font-size: 32px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  line-height: 1.15;
+  transition: all 0.4s ease;
+}
+
+.status-card-desc {
+  font-size: 14px;
+  color: var(--text-muted);
+  max-width: 640px;
+  line-height: 1.6;
+}
+
+.status-telemetry-tags {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-top: 4px;
+}
+
+.telemetry-tag {
+  font-size: 12px;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(0, 0, 0, 0.25);
+  padding: 4px 10px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.tag-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+/* STATE AMAN: HIJAU / TEAL */
+.main-status-card.state-aman {
+  background: linear-gradient(135deg, rgba(6, 78, 59, 0.6) 0%, rgba(13, 148, 136, 0.35) 50%, rgba(7, 40, 50, 0.8) 100%);
+  border: 1.5px solid rgba(16, 185, 129, 0.65);
+  box-shadow: 0 16px 40px rgba(16, 185, 129, 0.2), inset 0 0 40px rgba(16, 185, 129, 0.08);
+}
+
+.main-status-card.state-aman .status-pill-badge {
+  background: rgba(16, 185, 129, 0.25);
+  color: #34d399;
+  border: 1.5px solid #10b981;
+  box-shadow: 0 0 16px rgba(16, 185, 129, 0.5);
+}
+
+.main-status-card.state-aman .status-card-title {
+  color: #10b981;
+  text-shadow: 0 0 24px rgba(16, 185, 129, 0.55), 0 0 40px rgba(0, 242, 254, 0.25);
+}
+
+.main-status-card.state-aman .tag-dot {
+  background: var(--color-emerald);
+  box-shadow: 0 0 8px var(--color-emerald);
+}
+
+/* STATE BAHAYA: MERAH / ORANYE */
+.main-status-card.state-bahaya {
+  background: linear-gradient(135deg, rgba(159, 18, 57, 0.7) 0%, rgba(194, 65, 12, 0.5) 50%, rgba(69, 10, 10, 0.9) 100%);
+  border: 1.5px solid rgba(244, 63, 94, 0.9);
+  box-shadow: 0 16px 48px rgba(244, 63, 94, 0.35), inset 0 0 50px rgba(244, 63, 94, 0.15);
+  animation: danger-card-pulse 2.2s infinite ease-in-out;
+}
+
+@keyframes danger-card-pulse {
+  0% {
+    box-shadow: 0 16px 48px rgba(244, 63, 94, 0.35), inset 0 0 30px rgba(244, 63, 94, 0.15);
+    border-color: rgba(244, 63, 94, 0.7);
+  }
+  50% {
+    box-shadow: 0 20px 60px rgba(244, 63, 94, 0.6), inset 0 0 50px rgba(245, 158, 11, 0.3);
+    border-color: #f43f5e;
+  }
+  100% {
+    box-shadow: 0 16px 48px rgba(244, 63, 94, 0.35), inset 0 0 30px rgba(244, 63, 94, 0.15);
+    border-color: rgba(244, 63, 94, 0.7);
+  }
+}
+
+.main-status-card.state-bahaya .status-pill-badge {
+  background: rgba(244, 63, 94, 0.35);
+  color: #fda4af;
+  border: 1.5px solid #f43f5e;
+  box-shadow: 0 0 20px rgba(244, 63, 94, 0.75);
+  animation: badge-blink 1s infinite alternate;
+}
+
+@keyframes badge-blink {
+  from { opacity: 0.85; transform: scale(1); }
+  to { opacity: 1; transform: scale(1.05); }
+}
+
+.main-status-card.state-bahaya .status-card-title {
+  color: #ff3366;
+  text-shadow: 0 0 24px rgba(244, 63, 94, 0.75), 0 0 45px rgba(245, 158, 11, 0.45);
+}
+
+.main-status-card.state-bahaya .tag-dot {
+  background: var(--color-red);
+  box-shadow: 0 0 10px var(--color-red);
+}
+
+/* Radar Visual in Right Column of Status Card */
+.status-card-right {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.security-radar-visual {
+  position: relative;
+  width: 90px;
+  height: 90px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.radar-icon-shield {
+  font-size: 38px;
+  z-index: 3;
+  transition: transform 0.3s ease;
+}
+
+.radar-core-pulse {
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  transition: all 0.5s ease;
+}
+
+.state-aman .radar-core-pulse {
+  background: radial-gradient(circle, rgba(16, 185, 129, 0.4), transparent 70%);
+  animation: radar-pulse-green 2s infinite;
+}
+
+.state-bahaya .radar-core-pulse {
+  background: radial-gradient(circle, rgba(244, 63, 94, 0.5), transparent 70%);
+  animation: radar-pulse-red 1.2s infinite;
+}
+
+@keyframes radar-pulse-green {
+  0% { transform: scale(0.8); opacity: 0.8; }
+  100% { transform: scale(1.8); opacity: 0; }
+}
+
+@keyframes radar-pulse-red {
+  0% { transform: scale(0.8); opacity: 1; }
+  100% { transform: scale(2.2); opacity: 0; }
+}
+
+.radar-ring {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+}
+.ring-1 {
+  width: 70px;
+  height: 70px;
+  border: 1px dashed rgba(255, 255, 255, 0.15);
+}
+.ring-2 {
+  width: 90px;
+  height: 90px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Quick Manual Toggle Buttons */
+.status-manual-toggles {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.toggle-label {
+  font-size: 11px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.toggle-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-state-toggle {
+  padding: 5px 12px;
+  font-size: 11px;
+  font-weight: 700;
+  border-radius: 6px;
+  cursor: pointer;
+  border: 1px solid var(--border-subtle);
+  background: rgba(0, 0, 0, 0.4);
+  color: var(--text-muted);
+  transition: all 0.2s ease;
+}
+
+.btn-state-toggle:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.btn-set-aman.active, .btn-set-aman:hover {
+  border-color: #10b981;
+  color: #34d399;
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
+}
+
+.btn-set-bahaya.active, .btn-set-bahaya:hover {
+  border-color: #f43f5e;
+  color: #fda4af;
+  box-shadow: 0 0 10px rgba(244, 63, 94, 0.3);
+}
+
+/* ==========================================================================
+   CLIENT-SIDE WEBHOOK SIMULATOR FORM STYLES
+   ========================================================================== */
+.simulator-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 14px;
+}
+@media (max-width: 640px) {
+  .simulator-form-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.form-group {
+  margin-bottom: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-group label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.label-with-action {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.btn-inline-link {
+  background: none;
+  border: none;
+  color: var(--color-cyan);
+  font-size: 11px;
+  cursor: pointer;
+  text-decoration: underline;
+  padding: 0;
+}
+.btn-inline-link:hover {
+  color: #fff;
+}
+
+.soc-input {
+  width: 100%;
+  padding: 10px 14px;
+  background: rgba(8, 14, 26, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius-sm);
+  color: var(--text-main);
+  font-family: var(--font-sans);
+  font-size: 13px;
+  outline: none;
+  transition: all 0.2s ease;
+}
+.soc-input:focus {
+  border-color: var(--color-cyan);
+  box-shadow: 0 0 0 3px rgba(0, 242, 254, 0.15);
+}
+.soc-input.mono-font {
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+
+.input-secret-wrapper {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-copy-secret {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-muted);
+  border-radius: var(--radius-sm);
+  padding: 0 12px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+}
+.btn-copy-secret:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+}
+
+/* Custom Checkbox */
+.checkbox-group {
+  margin: 10px 0 16px;
+}
+
+.custom-checkbox-container {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  cursor: pointer;
+  padding: 10px 14px;
+  background: rgba(244, 63, 94, 0.06);
+  border: 1px solid rgba(244, 63, 94, 0.2);
+  border-radius: var(--radius-sm);
+  transition: all 0.2s ease;
+}
+.custom-checkbox-container:hover {
+  background: rgba(244, 63, 94, 0.12);
+  border-color: rgba(244, 63, 94, 0.35);
+}
+
+.custom-checkbox-container input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  margin-top: 2px;
+  accent-color: var(--color-red);
+  cursor: pointer;
+}
+
+.checkbox-label-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.checkbox-label-text strong {
+  font-size: 13px;
+  color: #fda4af;
+}
+.checkbox-label-text small {
+  font-size: 11px;
+  color: var(--text-dim);
+  line-height: 1.4;
+}
+
+/* Live Client-Side HMAC Strip */
+.live-hmac-preview-strip {
+  background: rgba(0, 0, 0, 0.45);
+  border: 1px solid rgba(0, 242, 254, 0.25);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  margin-bottom: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.hmac-label {
+  font-size: 11px;
+  color: var(--text-dim);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.hmac-status-pill {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: rgba(16, 185, 129, 0.2);
+  color: var(--color-emerald);
+  border: 1px solid rgba(16, 185, 129, 0.4);
+}
+.hmac-status-pill.palsu {
+  background: rgba(244, 63, 94, 0.2);
+  color: var(--color-red);
+  border-color: rgba(244, 63, 94, 0.5);
+}
+
+.hmac-value {
+  font-size: 12px;
+  color: var(--color-cyan);
+  word-break: break-all;
+  letter-spacing: 0.5px;
+}

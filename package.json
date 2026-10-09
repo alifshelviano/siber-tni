@@ -8,7 +8,9 @@
     "start": "node server.js",
     "dev": "node server.js",
     "test": "node tests/test_hmac_webhook.js && node tests/test_nim_analysis.js",
-    "test:flows": "node script/test_flows.js"
+    "test:flows": "node script/test_flows.js",
+    "test:telegram": "node script/test_telegram.js",
+    "alert": "node script/send_test_alert.js"
   },
   "dependencies": {
     "dotenv": "^16.4.5"

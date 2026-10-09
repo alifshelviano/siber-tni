@@ -47,6 +47,51 @@
       </div>
     </header>
 
+    <!-- Flagship Dynamic Security Status Main Card -->
+    <section class="main-status-section" id="section-main-status">
+      <div class="main-status-card state-aman" id="main-security-card">
+        <div class="status-card-glow" id="status-card-glow"></div>
+        <div class="status-card-inner">
+          <div class="status-card-left">
+            <div class="status-badge-row">
+              <span class="status-pill-badge" id="main-status-badge">AMAN</span>
+              <span class="status-sub-badge" id="main-status-subbadge">DEFCON 5 • NORMAL</span>
+              <span class="status-mode-tag">Real-Time Autonomous Sentinel</span>
+            </div>
+            <h2 class="status-card-title" id="main-status-title">SYSTEM SECURED</h2>
+            <p class="status-card-desc" id="main-status-desc">
+              Semua perimeter database terlindungi. Integritas kriptografi HMAC-SHA256 valid dan tidak ada ancaman aktif yang terdeteksi.
+            </p>
+            <div class="status-telemetry-tags">
+              <span class="telemetry-tag"><i class="tag-dot green-dot"></i> HMAC Auth: <strong>VERIFIED</strong></span>
+              <span class="telemetry-tag"><i class="tag-dot green-dot"></i> AI Engines: <strong>ACTIVE</strong></span>
+              <span class="telemetry-tag"><i class="tag-dot green-dot"></i> Telegram Sentinel: <strong>CONNECTED</strong></span>
+            </div>
+          </div>
+
+          <div class="status-card-right">
+            <div class="security-radar-visual" id="status-visual-indicator">
+              <div class="radar-core-pulse" id="radar-core-pulse"></div>
+              <div class="radar-ring ring-1"></div>
+              <div class="radar-ring ring-2"></div>
+              <div class="radar-icon-shield" id="main-status-icon">🛡️</div>
+            </div>
+            <div class="status-manual-toggles">
+              <span class="toggle-label">Uji Cepat Tampilan State:</span>
+              <div class="toggle-buttons">
+                <button type="button" class="btn-state-toggle btn-set-aman active" id="btn-force-aman" title="Ubah Tampilan ke State AMAN">
+                  ✓ AMAN
+                </button>
+                <button type="button" class="btn-state-toggle btn-set-bahaya" id="btn-force-bahaya" title="Ubah Tampilan ke State BAHAYA">
+                  ⚠️ BAHAYA
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- Metrics Cards Row -->
     <section class="kpi-grid" id="kpi-section">
       <div class="kpi-card glass-panel" id="card-total-events">
@@ -176,56 +221,95 @@
           </div>
         </div>
 
-        <!-- Interactive Webhook Threat Simulator -->
+        <!-- Interactive Webhook Threat Simulator (Client-Side HMAC & Telegram Trigger) -->
         <div class="glass-panel simulator-panel" id="simulator-panel">
           <div class="panel-header">
             <div class="panel-title-group">
               <span class="icon-chip">🧪</span>
-              <h3>Supabase Webhook & HMAC Security Testing Console</h3>
+              <h3>Panel Simulator Webhook HMAC (Client-Side)</h3>
             </div>
-            <span class="badge-subtle">Audit & Penetration Sandbox</span>
+            <span class="badge-subtle">Client-Side HMAC-SHA256 Sandbox</span>
           </div>
 
           <div class="simulator-body">
-            <div class="form-row">
-              <label for="attack-preset">Select Attack Scenario / Vector:</label>
-              <select id="attack-preset" class="soc-select">
-                <option value="sqli">1. SQL Injection: Tautology Auth Bypass (OR 1=1)</option>
-                <option value="privesc">2. Privilege Escalation: GRANT SUPERUSER to Anon</option>
-                <option value="exfil">3. Data Dump: Exfiltrate 50,000 Payment Tokens</option>
-                <option value="benign">4. Benign Query: User Profile Timestamp Update</option>
-              </select>
-            </div>
+            <form id="webhook-simulator-form" onsubmit="return false;">
+              <div class="simulator-form-grid">
+                <!-- Dropdown Pilihan Status: AMAN / BAHAYA -->
+                <div class="form-group">
+                  <label for="sim-status">Status Kejadian:</label>
+                  <select id="sim-status" class="soc-select">
+                    <option value="AMAN" selected>🟢 AMAN (Laporan Rutin / Valid)</option>
+                    <option value="BAHAYA">🔴 BAHAYA (Ancaman / Anomali)</option>
+                  </select>
+                </div>
 
-            <div class="form-row">
-              <label>HMAC-SHA256 Cryptographic Signature Header:</label>
-              <div class="radio-toggle-group">
-                <label class="radio-chip">
-                  <input type="radio" name="hmac-integrity" value="valid" checked>
-                  <span class="radio-label green-glow">✓ Valid HMAC-SHA256 Header</span>
-                </label>
-                <label class="radio-chip">
-                  <input type="radio" name="hmac-integrity" value="tampered">
-                  <span class="radio-label red-glow">✗ Tampered / Forged Signature (Simulate Attack)</span>
+                <!-- Dropdown Level Ancaman: 0 (Normal) hingga 3 (Kritis) -->
+                <div class="form-group">
+                  <label for="sim-threat-level">Level Ancaman (0 - 3):</label>
+                  <select id="sim-threat-level" class="soc-select">
+                    <option value="0" selected>0 • Normal (Aktivitas Biasa / Aman)</option>
+                    <option value="1">1 • Elevated (Peringatan Ringan)</option>
+                    <option value="2">2 • High (Percobaan Akses Ilegal)</option>
+                    <option value="3">3 • Kritis (Eksfiltrasi / SQL Injection)</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Input Teks untuk Pesan Laporan -->
+              <div class="form-group">
+                <label for="sim-report-message">Pesan Laporan Kejadian (Report Message):</label>
+                <input type="text" id="sim-report-message" class="soc-input" 
+                       value="Audit kueri tabel auth_tokens diverifikasi aman via Supabase CDC" 
+                       placeholder="Tuliskan deskripsi insiden atau pesan laporan...">
+              </div>
+
+              <!-- Input untuk Kunci Rahasia HMAC -->
+              <div class="form-group">
+                <div class="label-with-action">
+                  <label for="sim-hmac-secret">Kunci Rahasia HMAC (Shared Secret):</label>
+                  <button type="button" class="btn-inline-link" id="btn-toggle-secret-visibility">👁️ Lihat Kunci</button>
+                </div>
+                <div class="input-secret-wrapper">
+                  <input type="password" id="sim-hmac-secret" class="soc-input mono-font" 
+                         value="sec_super_secret_supabase_key_778899" 
+                         placeholder="Masukkan kunci HMAC rahasia...">
+                  <button type="button" class="btn-copy-secret" id="btn-reset-secret" title="Gunakan Kunci Default">↺ Default</button>
+                </div>
+              </div>
+
+              <!-- Checkbox: Kirim tanda tangan palsu (Simulasi Serangan) -->
+              <div class="form-group checkbox-group">
+                <label class="custom-checkbox-container" for="sim-fake-signature">
+                  <input type="checkbox" id="sim-fake-signature">
+                  <span class="checkmark"></span>
+                  <span class="checkbox-label-text">
+                    <strong>Kirim tanda tangan palsu (Simulasi Serangan / Forgery)</strong>
+                    <small>Mengirim header x-signature yang rusak/palsu untuk menguji penolakan HTTP 401 dan pertahanan sistem</small>
+                  </span>
                 </label>
               </div>
-            </div>
 
-            <div class="form-row">
-              <label>Simulated Supabase Webhook Payload (JSON):</label>
-              <textarea id="webhook-payload-editor" class="soc-textarea" rows="4"></textarea>
-            </div>
+              <!-- Live Client-Side Computed HMAC Preview Strip -->
+              <div class="live-hmac-preview-strip">
+                <div class="hmac-label">
+                  <span>Client-Side Computed HMAC-SHA256:</span>
+                  <span class="hmac-status-pill" id="hmac-status-badge">ASLI</span>
+                </div>
+                <div class="hmac-value mono" id="live-client-hmac">Menghitung hash kriptografi...</div>
+              </div>
 
-            <div class="action-btn-row">
-              <button id="btn-fire-webhook" class="btn btn-primary">
-                <span class="icon-bolt">⚡</span>
-                Send to /api/webhook (Verify HMAC & Analyze via NIM)
-              </button>
-              <button id="btn-recompute-hmac" class="btn btn-secondary">
-                <span class="icon-lock">🔐</span>
-                Inspect HMAC Key Math
-              </button>
-            </div>
+              <!-- Action Buttons -->
+              <div class="action-btn-row">
+                <button type="button" id="btn-transmit-webhook" class="btn btn-primary">
+                  <span class="icon-bolt">⚡</span>
+                  Kirim Webhook ke /api/webhook
+                </button>
+                <button type="button" id="btn-inspect-payload" class="btn btn-secondary">
+                  <span class="icon-lock">📋</span>
+                  Lihat JSON Payload
+                </button>
+              </div>
+            </form>
 
             <!-- Dynamic Execution Output Console -->
             <div class="console-box" id="simulator-output-box">
@@ -233,9 +317,10 @@
                 <span class="console-title">INSPECTION TELEMETRY OUTPUT</span>
                 <span class="console-status" id="console-http-status">STATUS: STANDBY</span>
               </div>
-              <pre class="console-code" id="console-code-block">// Select a vector above and click "Send to /api/webhook"
-// Serverless function will perform timing-safe HMAC-SHA256 verification
-// and stream through Dual NVIDIA NIM microservices.</pre>
+              <pre class="console-code" id="console-code-block">// Konfigurasi form di atas dan klik "Kirim Webhook ke /api/webhook"
+// 1. Signature dihitung langsung di sisi client (browser) dengan SHA-256
+// 2. Serverless function /api/webhook akan memvalidasi signature & meneruskan ke Telegram
+// 3. Kartu Status Keamanan Utama di atas akan berubah secara dinamis (AMAN / BAHAYA)</pre>
             </div>
           </div>
         </div>
